@@ -85,7 +85,7 @@ var pacman = vis.selectAll('#pacman')
       .attr('transform', translate )
 
 var food = vis.selectAll('#food')
-              .data(food_pos, function (d) {return d;})
+              .data(food_pos, function (d) {return [d.x, d.y];})
     food.enter()
         .append('svg:circle')
         .attr('cx', function (d) {return d.x*blksz;})
@@ -93,7 +93,7 @@ var food = vis.selectAll('#food')
         .attr('r', 3)
         .attr('id', 'food')
 
-    food.exit().remove()()
+    food.exit().remove()
 
 var ghost = vis.selectAll('#ghost')
               .data(ghost_pos)
