@@ -36,6 +36,7 @@ var w = 250;
 var h = 250;
 var margin = 10;
 var blksz = 10;
+var interval = 80;
 
 var vis = d3.select("#chart")
 .append("svg:svg")
@@ -48,6 +49,7 @@ var vis = d3.select("#chart")
 function translate(d) {
     return 'translate(' + d.x*blksz + "," + d.y*blksz + ")";
 }
+
 
 function redraw(data) {
     var pac_pos = data.pacman;
@@ -63,7 +65,7 @@ var maze = vis.selectAll("rect")
             .attr("width", blksz)
             .attr("height", blksz)
             .attr("x", function(d) {return blksz*(d.x-0.5);})
-            .attr("y", function(d) {return blksz*(d.y+0.5);})
+            .attr("y", function(d) {return blksz*(d.y-0.5);})
 
 var pacman = vis.selectAll('#pacman')
     .data(pac_pos)
@@ -76,20 +78,22 @@ var pacman = vis.selectAll('#pacman')
       .attr('transform', translate)
       .attr('id', 'pacman')
       .append('svg:path')
-      .attr('d', "M0 0 L20 0 L10 15 Z")
+      .attr('d', "M-5 -5 L5 -5 L0 5 Z")
 
       pacman.transition()
-      .duration(800)
+      .duration(interval)
       .attr('transform', translate )
 
 var food = vis.selectAll('#food')
-               .data(food_pos)
+              .data(food_pos, function (d) {return d;})
     food.enter()
         .append('svg:circle')
         .attr('cx', function (d) {return d.x*blksz;})
         .attr('cy', function (d) {return d.y*blksz;})
         .attr('r', 3)
         .attr('id', 'food')
+
+    food.exit().remove()()
 
 var ghost = vis.selectAll('#ghost')
               .data(ghost_pos)
@@ -103,7 +107,7 @@ ghost.enter()
      .attr('height', blksz*0.8)
 
 ghost.transition()
-      .duration(800)
+      .duration(interval)
       .attr('transform', translate )
     }
 

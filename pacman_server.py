@@ -6,6 +6,7 @@ import json
 import numpy as np
 from random import randint, random
 
+
 maze = """############
           #          #
           #    #     #
