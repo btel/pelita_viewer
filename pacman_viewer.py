@@ -39,6 +39,10 @@ class TornadoViewer():
                          universe.bot_positions]
         self.food_pos = [{'x':x, 'y':y} for x,y in
                          universe.food_list]
+        for i in universe.teams[0].bots:
+            self.pacman_pos[i].update({'team': 'teamA'})
+        for i in universe.teams[1].bots:
+            self.pacman_pos[i].update({'team': 'teamB'})
         self.send_data()
         time.sleep(0.1)
     

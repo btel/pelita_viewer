@@ -1,4 +1,4 @@
-ws = new MozWebSocket("ws://localhost:8888/socket");
+ws = new MozWebSocket("ws://"+ document.location.hostname +":8888/socket");
 
 ws.onopen = function() {
 };
@@ -67,16 +67,14 @@ var maze = vis.selectAll("rect")
             .attr("x", function(d) {return blksz*(d.x-0.5);})
             .attr("y", function(d) {return blksz*(d.y-0.5);})
 
-var pacman = vis.selectAll('#pacman')
+var pacman = vis.selectAll('g.pacman')
     .data(pac_pos)
 
-    console.log(pacman)
-
-    
+    console.log(pac_pos)
     pacman.enter()
       .append('svg:g')
       .attr('transform', translate)
-      .attr('id', 'pacman')
+      .attr('class', function (d) {return 'pacman ' + d['team'];})
       .append('svg:path')
       .attr('d', "M-5 -5 L5 -5 L0 5 Z")
 
@@ -85,7 +83,7 @@ var pacman = vis.selectAll('#pacman')
       .attr('transform', translate )
 
 var food = vis.selectAll('#food')
-              .data(food_pos, function (d) {return [d.x, d.y];})
+              .data(food_pos, function (d) {return d.x*w+d.y;})
     food.enter()
         .append('svg:circle')
         .attr('cx', function (d) {return d.x*blksz;})

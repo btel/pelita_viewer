@@ -8,6 +8,14 @@
 }
 
 .wall {
-    fill: none;
-    stroke: blue;
+    fill: black;
+    stroke: black;
+}
+
+g.teamA {
+    fill: red;
+}
+
+g.teamB {
+    fill: blue;
 }
