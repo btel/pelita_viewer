@@ -15,7 +15,6 @@ sys.path.append('/Users/bartosz/Downloads/pelita')
 
 import pelita.datamodel
 
-
 import time
 
 class TornadoViewer():
