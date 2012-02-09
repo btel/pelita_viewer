@@ -23,7 +23,7 @@ function dx(d) {return d.x;}
 function dy(d) {return d.y;}
 
 var margin = 10;
-var blksz = 10;
+var blksz = 20;
 var interval = 80;
 
 var vis = d3.select("#chart")
@@ -36,6 +36,10 @@ function translate(d) {
     return 'translate(' + d.x*blksz + "," + d.y*blksz + ")";
 }
 
+function translate_and_scale(d) {
+    return 'translate(' + d.x*blksz + "," + d.y*blksz + ") scale(" + blksz+")";
+}
+
 
 function redraw(data) {
     var pac_pos = data.pacman;
@@ -45,29 +49,30 @@ function redraw(data) {
     var w = data.width;
     var h = data.height;
 
-var maze = vis.selectAll("rect")
+var maze = vis.selectAll("rect.wall")
             .data(maze_pos)
-            .enter()
+maze.enter()
             .append("svg:rect")
             .attr("class", "wall")
             .attr("width", blksz)
             .attr("height", blksz)
             .attr("x", function(d) {return blksz*(d.x-0.5);})
             .attr("y", function(d) {return blksz*(d.y-0.5);})
+maze.exit().remove()
 
 var pacman = vis.selectAll('g.pacman')
 .data(pac_pos, function (d) {return "pacman"+d.id;})
 
     pacman.enter()
       .append('svg:g')
-      .attr('transform', translate)
+      .attr('transform', translate_and_scale)
       .attr('class', function (d) {return 'pacman ' + d.team;})
       .append('svg:path')
-      .attr('d', "M-5 -5 L5 -5 L0 5 Z")
+      .attr('d', "M-0.5 -0.5 L0.5 -0.5 L0 0.5 Z")
 
     pacman.transition()
       .duration(interval)
-      .attr('transform', translate )
+      .attr('transform', translate_and_scale)
 
     pacman.exit()
           .remove()
@@ -78,7 +83,7 @@ var food = vis.selectAll('#food')
         .append('svg:circle')
         .attr('cx', function (d) {return d.x*blksz;})
         .attr('cy', function (d) {return d.y*blksz;})
-        .attr('r', 3)
+        .attr('r', blksz/4)
         .attr('id', 'food')
 
     food.exit().remove()

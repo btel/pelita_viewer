@@ -26,10 +26,12 @@ class TornadoViewer():
         self.pacman_pos  = []
         self.width     = 0
         self.height    = 0
-
+  
         self.team_names=['teamA', 'teamB']
 
     def set_initial(self, universe):
+        #clear interface
+        self.send_data()
         wall = pelita.datamodel.Wall 
         self.maze_pos = [{'x':x, 'y':y} for x,y in
                          universe.maze.pos_of(wall)]
