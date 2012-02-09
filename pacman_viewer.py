@@ -15,7 +15,6 @@ sys.path.append('/Users/bartosz/Downloads/pelita')
 
 import pelita.datamodel
 
-wall = pelita.datamodel.Wall 
 
 import time
 
@@ -25,17 +24,21 @@ class TornadoViewer():
         self.ghost_pos = []
         self.food_pos  = []
         self.pacman_pos  = []
-        self.width     = 1
-        self.height    = 1
+        self.width     = 0
+        self.height    = 0
 
         self.team_names=['teamA', 'teamB']
 
     def set_initial(self, universe):
-         pass
-    
-    def observe(self, round_, turn, universe, events):
+        wall = pelita.datamodel.Wall 
         self.maze_pos = [{'x':x, 'y':y} for x,y in
                          universe.maze.pos_of(wall)]
+        self.width = universe.maze.width
+        self.height = universe.maze.height
+        self.send_data()
+
+    
+    def observe(self, round_, turn, universe, events):
         self.food_pos = [{'x':x, 'y':y} for x,y in
                          universe.food_list]
         self.pacman_pos = []
