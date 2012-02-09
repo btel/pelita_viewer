@@ -6,7 +6,6 @@ import json
 import numpy as np
 from random import randint, random
 
-listeners = []
 
 import urllib2
 import json
@@ -29,20 +28,30 @@ class TornadoViewer():
         self.width     = 1
         self.height    = 1
 
+        self.team_names=['teamA', 'teamB']
+
     def set_initial(self, universe):
          pass
     
     def observe(self, round_, turn, universe, events):
         self.maze_pos = [{'x':x, 'y':y} for x,y in
                          universe.maze.pos_of(wall)]
-        self.pacman_pos = [{'x':x, 'y':y} for x,y in
-                         universe.bot_positions]
         self.food_pos = [{'x':x, 'y':y} for x,y in
                          universe.food_list]
-        for i in universe.teams[0].bots:
-            self.pacman_pos[i].update({'team': 'teamA'})
-        for i in universe.teams[1].bots:
-            self.pacman_pos[i].update({'team': 'teamB'})
+        self.pacman_pos = []
+        self.ghost_pos = []
+
+        for bot in universe.bots:
+            bot_data = {'x':bot.current_pos[0],
+                        'y': bot.current_pos[1],
+                        'team': self.team_names[bot.team_index],
+                        'id': "bot{0}".format(bot.index)
+                       }
+            if bot.is_harvester:
+                self.pacman_pos.append(bot_data)
+            elif bot.is_destroyer:
+                self.ghost_pos.append(bot_data)
+
         self.send_data()
         time.sleep(0.1)
     
@@ -64,11 +73,12 @@ class MainHandler(tornado.web.RequestHandler):
         self.render("pacman.html")
 
 class ClientSocket(tornado.websocket.WebSocketHandler):
+    listeners = []
     def open(self):
         print "Opened: " + str(self)
-        listeners.append(self)
+        ClientSocket.listeners.append(self)
     def on_close(self):
-        listeners.remove(self)
+        ClientSocket.listeners.remove(self)
 
     def on_message(self, point):
         pass
@@ -76,7 +86,7 @@ class ClientSocket(tornado.websocket.WebSocketHandler):
 class DataHandler(tornado.web.RequestHandler):
     def post(self):
         data = self.request.body
-        for l in listeners:
+        for l in ClientSocket.listeners:
             l.write_message(data)
 
 settings = {

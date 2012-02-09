@@ -3,7 +3,7 @@ from pelita.game_master import GameMaster
 from pelita.player import StoppingPlayer, RandomPlayer, NQRandomPlayer, SimpleTeam
 from pelita.viewer import AbstractViewer
 import sys
-sys.path.append('/Users/bartosz/work/d3-pacman')
+sys.path.append('/Users/bartosz/Downloads/pelita')
 
 import pdb
 

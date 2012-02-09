@@ -68,19 +68,21 @@ var maze = vis.selectAll("rect")
             .attr("y", function(d) {return blksz*(d.y-0.5);})
 
 var pacman = vis.selectAll('g.pacman')
-    .data(pac_pos)
+.data(pac_pos, function (d) {return "pacman"+d.id;})
 
-    console.log(pac_pos)
     pacman.enter()
       .append('svg:g')
       .attr('transform', translate)
-      .attr('class', function (d) {return 'pacman ' + d['team'];})
+      .attr('class', function (d) {return 'pacman ' + d.team;})
       .append('svg:path')
       .attr('d', "M-5 -5 L5 -5 L0 5 Z")
 
-      pacman.transition()
+    pacman.transition()
       .duration(interval)
       .attr('transform', translate )
+
+    pacman.exit()
+          .remove()
 
 var food = vis.selectAll('#food')
               .data(food_pos, function (d) {return d.x*w+d.y;})
@@ -93,21 +95,28 @@ var food = vis.selectAll('#food')
 
     food.exit().remove()
 
-var ghost = vis.selectAll('#ghost')
-              .data(ghost_pos)
+var ghost = vis.selectAll('g.ghost')
+               .data(ghost_pos, function (d) {return "ghost"+d.id;})
 
 ghost.enter()
      .append('svg:g')
      .attr('transform', translate)
+     .attr('class', function (d) {return 'ghost ' + d.team;} )
      .attr('id', 'ghost')
      .append('svg:rect')
      .attr('width', blksz*0.8)
      .attr('height', blksz*0.8)
+     .attr('x', -blksz*0.8/2)
+     .attr('y', -blksz*0.8/2)
 
 ghost.transition()
       .duration(interval)
       .attr('transform', translate )
+
+ghost.exit()
+    .remove()
     }
+
 
 function random_move(pos)
 {
