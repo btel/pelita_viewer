@@ -3,18 +3,10 @@ from pelita.game_master import GameMaster
 from pelita.player import BFSPlayer, RandomPlayer, NQRandomPlayer, SimpleTeam
 from pelita.viewer import AbstractViewer
 import sys
-sys.path.append('/Users/bartosz/Downloads/pelita')
-
-import pdb
 
 from pacman_viewer import TornadoViewer
 
 from pelita.layout import get_random_layout
-
-class MyViewer(AbstractViewer):
-    def observe(self, round, turn, universe, events):
-        print universe.bot_positions
-        
 
 if __name__ == '__main__':
     layout = (
