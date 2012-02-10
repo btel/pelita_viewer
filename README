@@ -31,8 +31,8 @@ $> PYTHONPATH=/path/to/pelita python test_viewer.py
 Compatibility
 -------------
 
-The viewer was tested in Firefox and Safari. If you want to use Chrome
-you will need an update to the tornado server (the current repository
-should work fine).
+The viewer was tested in Firefox 9.0.1 and Safari with python 2.6. If
+you want to use Chrome you will need an update to the tornado server
+(the current repository should work fine).
 
 
