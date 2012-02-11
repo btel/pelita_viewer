@@ -1,0 +1,14 @@
+application: pelitaapp
+version: 1
+runtime: python
+api_version: 1
+
+inbound_services:
+- channel_presence
+
+handlers:
+- url: /static
+  static_dir: static
+
+- url: /.*
+  script: pacman_app.py

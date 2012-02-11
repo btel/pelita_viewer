@@ -1,6 +1,6 @@
-var Socket = "MozWebSocket" in window ? MozWebSocket : WebSocket;
+channel = new goog.appengine.Channel(token);
 
-ws = new Socket("ws://"+ document.location.hostname +":8888/socket");
+ws = channel.open();
 
 ws.onopen = function() {
 };

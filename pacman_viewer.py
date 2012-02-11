@@ -61,7 +61,7 @@ class TornadoViewer():
                 'width':self.width,
                 'height':self.height}
         data_json = json.dumps(data)
-        host = "http://127.0.0.1:8888/data"
+        host = "http://127.0.0.1:8080/data"
         req = urllib2.Request(host, data_json, {'content-type': 'application/json'})
         response_stream = urllib2.urlopen(req)
 
