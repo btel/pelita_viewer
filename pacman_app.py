@@ -7,12 +7,30 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.api.channel import create_channel, send_message
 
+import base64
+import urllib2
+
 listeners = []
 user_id = 0
+last_msg = '{"ghost": [], "food": [], "pacman": [], "height": [], "width": [], "state": "stop", "maze": []}'
+
+class StartGame(webapp.RequestHandler):
+    def post(self):
+        key = 1785
+
+        secret_key =  'cc8dc0f89a677a8aeb45e2d0a4351b765d684f68'
+        base64string = base64.encodestring('%s:%s' % (key, secret_key))[:-1]
+        http_headers = {'Authorization' : 'Basic %s' % base64string}
+        request =urllib2.Request('https://api.picloud.com/r/1741/main_func',
+                                 data='url="http://pelitaapp.appspot.com"',
+                          headers=http_headers)
+        response = urllib2.urlopen(request)
+
 
 class ConnectSocket(webapp.RequestHandler):
     def post(self):
         client_id = self.request.get('from')
+        send_message(client_id, last_msg)
         listeners.append(client_id)
 
 class DisconnectSocket(webapp.RequestHandler):
@@ -22,9 +40,11 @@ class DisconnectSocket(webapp.RequestHandler):
 
 class GetDataFromPelita(webapp.RequestHandler):
     def post(self):
-        data = self.request.body
+        msg = self.request.body
+        global last_msg
+        last_msg = msg
         for client in listeners:
-            send_message(client, data)
+            send_message(client, msg)
 
 
 class MainPage(webapp.RequestHandler):
@@ -44,9 +64,20 @@ class MainPage(webapp.RequestHandler):
                 </head>
               <body>
                     Hello Pelita!
+                    <form action="start" method="POST">
+                    <input type="button" id="start" value="New game"
+                                onClick="post()" disabled="disabled" />
+                    </form>
+                    
                     <div id="chart"></div>
-                    <script type="text/javascript"> var token = "%s"
-                                </script>
+                    <script type="text/javascript">
+                                
+                       var token = "%s";
+                       function post() {
+                                $.post('/start')
+                                $('#start').attr('disabled', 'disabled')
+                               }
+                    </script>
                     <script type="text/javascript" src="static/pacman.js"></script>
               </body>
             </html>
@@ -58,7 +89,8 @@ application = webapp.WSGIApplication(
                                        ConnectSocket),
                                       ('/_ah/channel/disconnected/',
                                        DisconnectSocket),
-                                      ('/data', GetDataFromPelita)
+                                      ('/data', GetDataFromPelita),
+                                      ('/start', StartGame)
                                      ],
                                      debug=True)
 

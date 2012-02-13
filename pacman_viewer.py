@@ -7,29 +7,31 @@ import urllib2
 
 import sys
 
-import pelita.datamodel
+from pelita.datamodel import TeamWins, Wall
 
 import time
 
 class TornadoViewer():
-    def __init__(self):
+    def __init__(self, url):
         self.maze_pos  = []
         self.ghost_pos = []
         self.food_pos  = []
         self.pacman_pos  = []
         self.width     = 0
         self.height    = 0
+        self.state = 'stop'
+        self.url = url
   
         self.team_names=['teamA', 'teamB']
 
     def set_initial(self, universe):
         #clear interface
         self.send_data()
-        wall = pelita.datamodel.Wall 
         self.maze_pos = [{'x':x, 'y':y} for x,y in
-                         universe.maze.pos_of(wall)]
+                         universe.maze.pos_of(Wall)]
         self.width = universe.maze.width
         self.height = universe.maze.height
+        self.state = 'run'
         self.send_data()
 
     
@@ -49,6 +51,11 @@ class TornadoViewer():
                 self.pacman_pos.append(bot_data)
             elif bot.is_destroyer:
                 self.ghost_pos.append(bot_data)
+        
+        if TeamWins in events:
+            self.state = 'stop'
+        else:
+            self.state = 'run'
 
         self.send_data()
         time.sleep(0.1)
@@ -59,9 +66,10 @@ class TornadoViewer():
                 'pacman': self.pacman_pos,
                 'food':self.food_pos,
                 'width':self.width,
-                'height':self.height}
+                'height':self.height,
+                'state': self.state}
         data_json = json.dumps(data)
-        host = "http://127.0.0.1:8080/data"
+        host = self.url+"/data"
         req = urllib2.Request(host, data_json, {'content-type': 'application/json'})
         response_stream = urllib2.urlopen(req)
 

@@ -41,6 +41,8 @@ function translate_and_scale(d) {
 }
 
 
+var button = $("#start") 
+
 function redraw(data) {
     var pac_pos = data.pacman;
     var food_pos = data.food;
@@ -48,6 +50,10 @@ function redraw(data) {
     var maze_pos = data.maze;
     var w = data.width;
     var h = data.height;
+
+
+    if (data.state=="run") button.attr('disabled', "disabled");
+    else if (data.state=="stop") button.removeAttr('disabled');
 
 var maze = vis.selectAll("rect.wall")
             .data(maze_pos)
