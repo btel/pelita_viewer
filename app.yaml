@@ -11,4 +11,4 @@ handlers:
   static_dir: static
 
 - url: /.*
-  script: pacman_app.py
+  script: frontend.py

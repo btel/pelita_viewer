@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 #coding=utf-8
+
+
 import logging
 
 from google.appengine.api import users
@@ -10,19 +12,19 @@ from google.appengine.api.channel import create_channel, send_message
 import base64
 import urllib2
 
+from picloud_conf import *
+
 listeners = []
 user_id = 0
 last_msg = '{"ghost": [], "food": [], "pacman": [], "height": [], "width": [], "state": "stop", "maze": []}'
 
 class StartGame(webapp.RequestHandler):
     def post(self):
-        key = 1785
 
-        secret_key =  'cc8dc0f89a677a8aeb45e2d0a4351b765d684f68'
         base64string = base64.encodestring('%s:%s' % (key, secret_key))[:-1]
         http_headers = {'Authorization' : 'Basic %s' % base64string}
-        request =urllib2.Request('https://api.picloud.com/r/1741/main_func',
-                                 data='url="http://pelitaapp.appspot.com"',
+        request =urllib2.Request(main_url,
+                                 data='url="%s"' % frontend_url,
                           headers=http_headers)
         response = urllib2.urlopen(request)
 
