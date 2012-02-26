@@ -1,38 +1,17 @@
-pelita HTML5/SVG viewer
+Pelita appengine viewer
 =======================
+
+You can see it in action on: http://pelitaapp.appspot.com
+
+Read on in my blog: ...
 
 Install
 -------
 
-1. Install tornado.
-2. Clone pelita repo.
-3. Clone the pelita_viewer repo.
-
-
-Run
----
-
-1. Run the server:
-
-$> python pacman_server.py
-
-2. Open your browser (Firefox or Safari) and point it to
-http://127.0.0.1:8888 (or the IP of the server on which you started
-pacman_server.py)
-
-3. Run the test game:
-
-ATTENTION! Pelita has to be in your PYTHONPATH!
-
-$> PYTHONPATH=/path/to/pelita python test_viewer.py
-
-4. Watch the game progress in your webbrowser
-
-Compatibility
--------------
-
-The viewer was tested in Firefox 9.0.1 and Safari with python 2.6. If
-you want to use Chrome you will need an update to the tornado server
-(the current repository should work fine).
-
+1. Install Google App Engine SDK.
+2. Create PiCloud account.
+3. Create picloud_conf.py file (you can see an example in
+picloud_conf_example.py)
+4. Deploy using SDK (on linux: python appcfg.py update
+/path/to/this/directory)
 
