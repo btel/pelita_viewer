@@ -7,7 +7,7 @@ import urllib2
 
 import sys
 
-from pelita.datamodel import TeamWins, Wall
+from pelita.datamodel import Wall
 
 import time
 
@@ -35,7 +35,7 @@ class TornadoViewer():
         self.send_data()
 
     
-    def observe(self, round_, turn, universe, events):
+    def observe(self, universe, game_state):
         self.food_pos = [{'x':x, 'y':y} for x,y in
                          universe.food_list]
         self.pacman_pos = []
@@ -51,8 +51,10 @@ class TornadoViewer():
                 self.pacman_pos.append(bot_data)
             elif bot.is_destroyer:
                 self.ghost_pos.append(bot_data)
+
+        winning_team_idx = game_state.get("team_wins")
         
-        if TeamWins in events:
+        if winning_team_idx is not None:
             self.state = 'stop'
         else:
             self.state = 'run'

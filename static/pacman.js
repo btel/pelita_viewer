@@ -28,6 +28,7 @@ var interval = 80;
 
 var vis = d3.select("#chart")
 .append("svg:svg")
+    .attr("id", "maze")
  .append("svg:g")
  .attr("transform", "translate(" + margin + "," + margin + ")");
                 

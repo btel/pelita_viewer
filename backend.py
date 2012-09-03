@@ -19,7 +19,7 @@ def main(url='http://127.0.0.1:8080'):
     #        #2#####    #####1#
     #        #     . #  .  .#3#
     #        ################## """)
-    layout = get_random_layout()
+    name, layout = get_random_layout()
     gm = GameMaster(layout, 4, 200)
     gm.register_team(SimpleTeam(BFSPlayer(), NQRandomPlayer()))
     gm.register_team(SimpleTeam(NQRandomPlayer(), BFSPlayer()))
@@ -32,5 +32,15 @@ def set_cloud_rest():
     print func_id
 
 if __name__ == "__main__":
-    set_cloud_rest()
-    #main(url='http://pelitaapp.appspot.com')
+    try:
+        _, mode = sys.argv
+    except ValueError:
+        print('Run: python backend.py MODE')
+        sys.exit(0)
+
+    if mode == 'local':
+        main(url='http://127.0.0.1:8080')
+    elif mode == 'picloud':
+        set_cloud_rest()
+    else:
+        print('Mode can be either local or picloud')
