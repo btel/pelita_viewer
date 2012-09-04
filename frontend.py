@@ -2,9 +2,8 @@
 #coding=utf-8
 
 
-import logging
+import os
 
-from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.api.channel import create_channel, send_message
@@ -16,17 +15,21 @@ from picloud_conf import *
 
 listeners = []
 user_id = 0
+game_id = 0
 last_msg = '{"ghost": [], "food": [], "pacman": [], "height": [], "width": [], "state": "stop", "maze": []}'
 
 class StartGame(webapp.RequestHandler):
     def post(self):
-
+        global game_id
+        game_id+=1
         base64string = base64.encodestring('%s:%s' % (key, secret_key))[:-1]
         http_headers = {'Authorization' : 'Basic %s' % base64string}
         request =urllib2.Request(main_url,
-                                 data='url="%s"' % frontend_url,
+                                 data='url="%s";gameid=%d' % (frontend_url, game_id),
                           headers=http_headers)
+
         response = urllib2.urlopen(request)
+        self.redirect('/game?gameid=%d' % game_id)
 
 
 class ConnectSocket(webapp.RequestHandler):
@@ -52,43 +55,30 @@ class GetDataFromPelita(webapp.RequestHandler):
 class MainPage(webapp.RequestHandler):
     
     def get(self):
+        template_path = os.path.dirname(__file__)
+        with file(os.path.join(template_path, 'templates/main.html')) as page:
+            self.response.out.write(page.read())
+
+
+class GamePage(webapp.RequestHandler):
+
+    def get(self):
         global user_id
+        game_id = int(self.request.get('gameid'))
         socket_token = create_channel(str(user_id))
         user_id+=1
-        self.response.out.write('''
-            <html>
-                <head>
-                <meta content="text/html;charset=utf-8" http-equiv="content-type">
-                <script type="text/javascript" src="static/d3/d3.js"></script>
-                <script type="text/javascript" src="static/jquery.js"></script>
-                <script type="text/javascript" src="/_ah/channel/jsapi"></script>
-                <link type="text/css" rel="stylesheet" href="static/pacman.css"/>
-                </head>
-              <body>
-                    Hello Pelita!
-                    <form action="start" method="POST">
-                    <input type="button" id="start" value="New game"
-                                onClick="post()" disabled="disabled" />
-                    </form>
-                    
-                    <div id="chart"></div>
-                    <script type="text/javascript">
-                                
-                       var token = "%s";
-                       function post() {
-                                $.post('/start')
-                                $('#start').attr('disabled', 'disabled')
-                               }
-                    </script>
-                    <script type="text/javascript" src="static/pacman.js"></script>
-              </body>
-            </html>
-                                ''' % socket_token)
+        template_path = os.path.dirname(__file__)
+        with file(os.path.join(template_path, 'templates/game.html')) as page:
+            self.response.out.write(page.read() % (game_id, socket_token ))
+
+
 
 application = webapp.WSGIApplication(
                                      [('/', MainPage),
+                                      ('/game', GamePage),
                                       ('/_ah/channel/connected/',
                                        ConnectSocket),
+
                                       ('/_ah/channel/disconnected/',
                                        DisconnectSocket),
                                       ('/data', GetDataFromPelita),

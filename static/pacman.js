@@ -52,9 +52,7 @@ function redraw(data) {
     var w = data.width;
     var h = data.height;
 
-
-    if (data.state=="run") button.attr('disabled', "disabled");
-    else if (data.state=="stop") button.removeAttr('disabled');
+    if (data.gameid != gameid) return;
 
 var maze = vis.selectAll("rect.wall")
             .data(maze_pos)

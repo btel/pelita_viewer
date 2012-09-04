@@ -12,7 +12,7 @@ from pelita.datamodel import Wall
 import time
 
 class TornadoViewer():
-    def __init__(self, url):
+    def __init__(self, url, gameid):
         self.maze_pos  = []
         self.ghost_pos = []
         self.food_pos  = []
@@ -21,6 +21,7 @@ class TornadoViewer():
         self.height    = 0
         self.state = 'stop'
         self.url = url
+        self.gameid = gameid
   
         self.team_names=['teamA', 'teamB']
 
@@ -63,7 +64,8 @@ class TornadoViewer():
         time.sleep(0.1)
     
     def send_data(self):
-        data = {'maze': self.maze_pos,
+        data = {'gameid' : self.gameid,
+                'maze': self.maze_pos,
                 'ghost':self.ghost_pos,
                 'pacman': self.pacman_pos,
                 'food':self.food_pos,
